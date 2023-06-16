@@ -7,6 +7,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class TestBase {
     // Byu claasa extendsettiğimiz test clasllarından ulaşabiliriz
@@ -26,7 +28,7 @@ public abstract class TestBase {
 
     @After
     public void tearDown() throws Exception {
-       // driver.quit();
+        // driver.quit();
     }
 
     public void bekle(int saniye) {//sürekli Thread.sleep(); yazmamak icin bu methodu olusturduk.
@@ -40,20 +42,31 @@ public abstract class TestBase {
 
     }
 
-    public void alertAccept (){
+    public void alertAccept() {
         driver.switchTo().alert().accept();
     }
 
-    public void alertDismiss(){
+    public void alertDismiss() {
         driver.switchTo().alert().dismiss();
     }
 
-    public void alertSendKeys(String text){
+    public void alertSendKeys(String text) {
         driver.switchTo().alert().sendKeys(text);
     }
 
-    public void alertText (){
+    public void alertText() {
         System.out.println(driver.switchTo().alert().getText());
     }
 
+    //SwitchTo Window-1
+    public void switchToWindow1(int index) {
+        List<String> pencereler = new ArrayList<>(driver.getWindowHandles());
+        driver.switchTo().window(pencereler.get(index));
+    }
+
+    //SwitchTo Window-2
+    public void switchToWindow2(int index) {
+        driver.switchTo().window(driver.getWindowHandles().toArray()[index].toString());
+
+    }
 }
