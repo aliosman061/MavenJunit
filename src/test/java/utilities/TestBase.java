@@ -4,7 +4,9 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -56,6 +58,23 @@ public abstract class TestBase {
 
     public String getTextAlert(){
         return driver.switchTo().alert().getText();
+    }
+    //DropDown VisibleText
+    public void selectVisibleText(WebElement ddm, String text){
+        Select select = new Select(ddm);
+        select.selectByVisibleText(text);
+    }
+
+    //DropDown Index
+    public void selectIndex(WebElement ddm,int index){
+        Select select = new Select(ddm);
+        select.selectByIndex(index);
+    }
+
+    //DropDown Value
+    public void selectValue(WebElement ddm,String value){
+        Select select = new Select(ddm);
+        select.selectByValue(value);
     }
 
     //SwitchTo Window-1
