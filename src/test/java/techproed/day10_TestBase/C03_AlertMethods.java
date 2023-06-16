@@ -112,7 +112,7 @@ public class C03_AlertMethods extends TestBase {
 
 
         //    uyarıdaki mesajı konsolda yazdırın,
-        alertText();
+        getTextAlert();
         // getText() uyarıdaki mesajı bize String olarak getirir
 
 

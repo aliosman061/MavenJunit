@@ -54,8 +54,8 @@ public abstract class TestBase {
         driver.switchTo().alert().sendKeys(text);
     }
 
-    public void alertText() {
-        System.out.println(driver.switchTo().alert().getText());
+    public String getTextAlert(){
+        return driver.switchTo().alert().getText();
     }
 
     //SwitchTo Window-1
