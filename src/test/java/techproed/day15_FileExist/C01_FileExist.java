@@ -29,6 +29,13 @@ public class C01_FileExist {
         String dosyaYolu=farkliKisim+ortakKisim;
         Assert.assertTrue(Files.exists(Paths.get(dosyaYolu)));
 
+        /*
+        NOT:
+    Windows10 sürümlerinden önceki sürümler için pratik olarak dosya yolu almak istersek
+    yolunu almak istediğimiz dosyanun üzerine gelip shift+sayKlik tusuna basarak yol olarak kopyala
+    seçeneği ile dosya yolunu kopyalayabiliriz.
+         */
+
 
 
 
