@@ -1,5 +1,8 @@
 package utilities;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -13,6 +16,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -22,8 +28,11 @@ import java.util.Date;
 import java.util.List;
 
 public abstract class TestBase {
-    // Byu claasa extendsettiğimiz test clasllarından ulaşabiliriz
+    // Bu claasa extendsettiğimiz test clasllarından ulaşabiliriz
     //Test Base Clasında obje oluşturulmasının önüne abstract ile geçtik.
+    protected ExtentReports extentReports; //-->Raporlamayı başlatmak için kullanılan class
+    protected ExtentHtmlReporter extentHtmlReporter;//-->Raporu HTML formatında düzenler
+    protected ExtentTest extentTest;//--> Test adımlarına eklemek istediğimiz bilgileri bu class ile oluştururuz
 
 
     protected WebDriver driver;//default halde diğer classlardan kullanılamaz, protected yaparak diğer clasların ulaşmasını sağladık.
@@ -40,6 +49,8 @@ public abstract class TestBase {
     @After
     public void tearDown() throws Exception {
         // driver.quit();
+
+
     }
 
     public void bekle(int saniye) {//sürekli Thread.sleep(); yazmamak icin bu methodu olusturduk.
@@ -65,23 +76,24 @@ public abstract class TestBase {
         driver.switchTo().alert().sendKeys(text);
     }
 
-    public String getTextAlert(){
+    public String getTextAlert() {
         return driver.switchTo().alert().getText();
     }
+
     //DropDown VisibleText
-    public void selectVisibleText(WebElement ddm, String text){
+    public void selectVisibleText(WebElement ddm, String text) {
         Select select = new Select(ddm);
         select.selectByVisibleText(text);
     }
 
     //DropDown Index
-    public void selectIndex(WebElement ddm,int index){
+    public void selectIndex(WebElement ddm, int index) {
         Select select = new Select(ddm);
         select.selectByIndex(index);
     }
 
     //DropDown Value
-    public void selectValue(WebElement ddm,String value){
+    public void selectValue(WebElement ddm, String value) {
         Select select = new Select(ddm);
         select.selectByValue(value);
     }
@@ -100,29 +112,68 @@ public abstract class TestBase {
 
     //visible wait
     public void visibleWait(WebElement element, int saniye) {
-        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(saniye*1000));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(saniye * 1000));
         wait.until(ExpectedConditions.visibilityOf(element));
     }
+
     //Tüm Sayfa Resmi (ScreenShot)
-    public void tumSayfaResmi(){
+    public void tumSayfaResmi() {
         String tarih = new SimpleDateFormat("_hh_mm_ss_ddMMyyyy").format(new Date());
         String dosyaYolu = "src/test/java/techproed/TumSayfaResmi/screenShot" + tarih + ".jpeg";
         TakesScreenshot ts = (TakesScreenshot) driver;
         try {
-            FileUtils.copyFile(ts.getScreenshotAs(OutputType.FILE),new File(dosyaYolu));
+            FileUtils.copyFile(ts.getScreenshotAs(OutputType.FILE), new File(dosyaYolu));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     //WebElement Resmi (Webelement ScreenShot)
-    public void webElementResmi(WebElement element){
+    public void webElementResmi(WebElement element) {
         String tarih = new SimpleDateFormat("_hh_mm_ss_ddMMyyyy").format(new Date());
         String dosyaYolu = "src/test/java/techproed/ElementResmi/WEscreenShot" + tarih + ".jpeg";
         try {
-            FileUtils.copyFile(element.getScreenshotAs(OutputType.FILE),new File(dosyaYolu));
+            FileUtils.copyFile(element.getScreenshotAs(OutputType.FILE), new File(dosyaYolu));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+    //UploadFile Robot Class
+    public void uploadFilePath(String filePath) {
+        try {
+            bekle(3);
+            StringSelection stringSelection = new StringSelection(filePath);
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
+            Robot robot = new Robot();
+            robot.keyPress(KeyEvent.VK_CONTROL);
+            bekle(3);
+            robot.keyPress(KeyEvent.VK_V);
+            bekle(3);
+            robot.keyRelease(KeyEvent.VK_CONTROL);
+            bekle(3);
+            robot.keyRelease(KeyEvent.VK_V);
+            bekle(3);
+            robot.keyPress(KeyEvent.VK_ENTER);
+            bekle(3);
+            robot.keyRelease(KeyEvent.VK_ENTER);
+            bekle(3);
+        } catch (AWTException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    //Extent Report Methodu
+    public void extentReport(String browser,String reportName){
+        extentReports = new ExtentReports();
+        String tarih = new SimpleDateFormat("_hh_mm_ss_ddMMyyyy").format(new Date());
+        String dosyaYolu = "testOutput/extentReports/extentReport"+tarih+".html";
+        extentHtmlReporter = new ExtentHtmlReporter(dosyaYolu);
+        extentReports.attachReporter(extentHtmlReporter);//-->HTML formatında raporlamayı başlatacak
+        //Raporda gözükmesini isteğimiz bilgiler için
+        extentReports.setSystemInfo("Browser",browser);
+        extentReports.setSystemInfo("Tester","Ali Osman");
+        extentHtmlReporter.config().setDocumentTitle("Extent Report");
+        extentHtmlReporter.config().setReportName(reportName);
+    }
+
 }
