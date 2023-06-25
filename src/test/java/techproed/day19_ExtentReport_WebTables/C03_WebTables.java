@@ -7,6 +7,11 @@ import utilities.TestBase;
 
 public class C03_WebTables extends TestBase {
     /*
+     Thead : Tablo Başlığı
+    Tbody : Tablo Body'si
+    Tr : Table Row(Satır)
+    Td : Table Data(Sütun olarak adlandırılabilir)
+
 WEBTABLE;
     <table> tagı ile başlar
         <thead> başlıklar için bu tag ile devam eder
